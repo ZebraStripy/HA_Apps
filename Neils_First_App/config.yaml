@@ -1,0 +1,11 @@
+name: Neil's First App
+version: "0.1.0"
+slug: neilsfirstappagain
+description: Logs a timestamp to the Home Assistant add-on log every 60 seconds.
+startup: services
+boot: auto
+init: false
+arch:
+  - aarch64
+options: {}
+schema: {}
