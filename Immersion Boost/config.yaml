@@ -1,0 +1,9 @@
+name: "Immersion Boost"
+version: "0.0.3"
+slug: "immersionboost"
+description: "Uses Octopus and Solar iBoost to turn on immersion for free electricity periods."
+arch:
+  - aarch64
+homeassistant_api: true
+startup: application
+boot: auto
