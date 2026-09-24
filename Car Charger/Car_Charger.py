@@ -164,7 +164,14 @@ def Update_Option(Request, Slots):
       else:
          Request.Status = StatusT.OK
 
+      Log(f"Updated Request: {Request} Slot Length {Slot_Length}")
 
+###########################
+# Write a log message to disk we can see later...
+def Log(msg):
+    with Log_File.open("a", encoding="utf-8") as f:
+        f.write(msg + "\n")
+        
 ###########################
 # State
             
@@ -173,12 +180,9 @@ def Update_Option(Request, Slots):
  
 print(f"Starting Charge Option Calculation ... Version {HA.VERSION}", flush=True)
 
-config = Path("/config")
-
-if config.is_dir():
-    (config / "log.txt").touch() 
-else:
-   print("Failed to find config directory!")    
+# Set up the Log File.
+Log_File = Path(HA.LOG_FILE_PATH)
+Log(f"Starting Charge Option Calculation at {datetime.now(UK_TZ)}. Version {HA.VERSION}.")
 
 while True:
 # if True:
@@ -192,6 +196,8 @@ while True:
    # Convert hours to 30-min electricity slots.
    Fully_Charge_Slots   = round(Fully_Charge_Time * 2)
    Top_Up_Charge_Slots  = round(Top_Up_Charge_Time * 2) 
+   
+   Log(f"Top Up Size in slots: {Top_Up_Charge_Slots}")
 
    # Set up our 4 requests....
    Fully      = Charge_Option(Name = "F-", Length = Fully_Charge_Slots)
@@ -238,7 +244,9 @@ while True:
  
    # Wait until next slot...
    Sleep_Until_Next_Half_Hour()
-   
+
+# Never get her, but....   
+Log.close()
    
    
    

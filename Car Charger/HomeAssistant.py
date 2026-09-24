@@ -19,6 +19,7 @@ if TOKEN:
    # Assuming in a HA started app container - use provided enviroment.
    URL_ROOT         = "http://supervisor/core/api/"
    VERSION          = os.environ.get("ADDON_VERSION")
+   LOG_FILE_PATH    = "/config/Log.txt"
 
 else:
 
@@ -28,6 +29,7 @@ else:
    TOKEN            = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkYzY3NWZjYzNjODc0MDVjOGNjMzZkN2M2YjQwNDE0NyIsImlhdCI6MTc4ODQ2NzcxOCwiZXhwIjoyMTAzODI3NzE4fQ.xZVDONLFKaoGfU48kAofWWM18zk3AJKS90-bLpPzCgE"
    URL_ROOT         = "http://192.168.1.208:8123/api/"
    VERSION          = "Local"
+   LOG_FILE_PATH    = "Log.txt"
 
 # Various things we "do" with an Entity.
 URL_STATE        = URL_ROOT + "states/"  
