@@ -1,5 +1,5 @@
 name: "Car Charger"
-version: "0.0.2"
+version: "0.0.3"
 slug: "carchargerslots"
 description: "Uses Octopus and BMW Data to find the best times to charge the car."
 arch:
@@ -7,3 +7,5 @@ arch:
 homeassistant_api: true
 startup: application
 boot: auto
+map:
+  - addon_config:rw

@@ -12,6 +12,7 @@ from   dataclasses import dataclass, asdict
 from   datetime import datetime, timezone, timedelta
 from   enum import Enum, IntEnum
 import json
+from   pathlib import Path
 import time
 from   zoneinfo import ZoneInfo
 
@@ -171,7 +172,13 @@ def Update_Option(Request, Slots):
 # Main Script
  
 print(f"Starting Charge Option Calculation ... Version {HA.VERSION}", flush=True)
- 
+
+config = Path("/config")
+
+if config.is_dir():
+    (config / "log.txt").touch() 
+else:
+   print("Failed to find config directory!")    
 
 while True:
 # if True:
