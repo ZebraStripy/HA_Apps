@@ -1,5 +1,5 @@
 name: "Car Charger"
-version: "0.0.4"
+version: "0.0.5"
 slug: "carchargerslots"
 description: "Uses Octopus and BMW Data to find the best times to charge the car."
 arch:

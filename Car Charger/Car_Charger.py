@@ -24,6 +24,8 @@ import HomeAssistant as HA
 
 UK_TZ = ZoneInfo("Europe/London")
 
+Max_Electric_Range = 22
+
 ###########################
 # Store the entities we use with easy, sensible names.
 
@@ -104,9 +106,9 @@ def Get_Charge_Needed():
 
     # 25 miles is 100% fully charged.
     # Calculate proportion (range 0 - 1) of a full charge needed.
-    Used_Range = 25 - Current_Range    
-    Factor = Used_Range / 25
-
+    Used_Range = Max_Electric_Range - Current_Range    
+    Factor = Used_Range / Max_Electric_Range
+ 
     return Factor
   
 ###########################
@@ -144,7 +146,6 @@ def Update_Option(Request, Slots):
    if Request.End_By_8am:
       if End_Target < Slots[Slot_Length - 1].Start:
          # Abort as end of slot is too late.
-         # print(f"{Request.Name}: {End_Target.strftime('%H:%M')} < {Slots[Slot_Length - 1].Start.strftime('%H:%M')} - abort") # Debug
          return
          
    Next_Rate = sum([x.Rate for x in Slots[:Slot_Length]]) / Slot_Length
@@ -153,7 +154,7 @@ def Update_Option(Request, Slots):
    
       # Found a cheaper rate.
       Request.Start = Slots[0].Start.strftime("%H:%M")
-      Request.End   = (Slots[0].Start + timedelta(hours = Slot_Length //2)).strftime("%H:%M")
+      Request.End   = (Slots[0].Start + timedelta(minutes = 30 * Slot_Length)).strftime("%H:%M")
       Request.Rate  = Next_Rate
       Request.Price = Slot_Length * Next_Rate * 1.25 # 30 mins slots, at 2.5 KWH is 1.25 KW, at the average rate.
       
@@ -164,13 +165,20 @@ def Update_Option(Request, Slots):
       else:
          Request.Status = StatusT.OK
 
-      Log(f"Updated Request: {Request} Slot Length {Slot_Length}")
+      # Log the update, but don't put in HA logs as too big.
+      Log(f"Updated Request: {Request} Slot Length {Slot_Length}", Print_Too = False)
 
 ###########################
 # Write a log message to disk we can see later...
-def Log(msg):
+def Log(Msg, Print_Too = True):
+
+    # To log file.
     with Log_File.open("a", encoding="utf-8") as f:
-        f.write(msg + "\n")
+        f.write(Msg + "\n")
+  
+    # To console or HA log.
+    if Print_Too:
+       print(Msg, flush=True)    
         
 ###########################
 # State
@@ -178,20 +186,19 @@ def Log(msg):
 ###########################
 # Main Script
  
-print(f"Starting Charge Option Calculation ... Version {HA.VERSION}", flush=True)
-
 # Set up the Log File.
 Log_File = Path(HA.LOG_FILE_PATH)
 Log(f"Starting Charge Option Calculation at {datetime.now(UK_TZ)}. Version {HA.VERSION}.")
 
 while True:
-# if True:
 
    Now = datetime.now(UK_TZ)
    
    # Calculate charge time needed (in hours) by looking at battery level
    Fully_Charge_Time   = 5.5
    Top_Up_Charge_Time  = Fully_Charge_Time * Get_Charge_Needed()
+
+   Log(f"Top Up Size in hours: {Top_Up_Charge_Time}")
 
    # Convert hours to 30-min electricity slots.
    Fully_Charge_Slots   = round(Fully_Charge_Time * 2)
@@ -228,8 +235,6 @@ while True:
    # Look for all candidate subsequences.   
    while len(Slots) > 0:
    
-      # print(f"Time {Slots[0].Start} & Len Slots: {len(Slots)}") # Debug
-
       for Request in Requests:
          Update_Option(Request, Slots)	
  
@@ -238,14 +243,12 @@ while True:
    # Store for HA to use.
    Set_Charge_Options()
    
-   print(f"Recalculated slots at {Now.strftime('%H:%M')}", flush=True)  
-   # for Request in Requests:
-   #    print(f"{Request.Name} => {Request}")
+   Log(  f"Recalculated slots at {Now.strftime('%H:%M')}")  
  
    # Wait until next slot...
    Sleep_Until_Next_Half_Hour()
 
-# Never get her, but....   
+# Never get here, but....   
 Log.close()
    
    
