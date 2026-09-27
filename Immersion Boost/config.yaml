@@ -1,5 +1,5 @@
 name: "Immersion Boost"
-version: "0.0.3"
+version: "0.0.4"
 slug: "immersionboost"
 description: "Uses Octopus and Solar iBoost to turn on immersion for free electricity periods."
 arch:
@@ -7,3 +7,8 @@ arch:
 homeassistant_api: true
 startup: application
 boot: auto
+url: "https://github.com/ZebraStripy/"
+options:
+  threshold: 0.0
+schema:
+  threshold: float(-5.0, 5.0)

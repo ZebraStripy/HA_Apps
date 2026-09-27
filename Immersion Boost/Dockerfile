@@ -4,6 +4,6 @@ FROM python:3.13-alpine
 ARG BUILD_VERSION
 ENV ADDON_VERSION=$BUILD_VERSION
 
-COPY app.py /
+COPY Immersion_Boost.py /
 
-CMD [ "python3", "/app.py" ]
+CMD [ "python3", "/Immersion_Boost.py" ]

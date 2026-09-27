@@ -36,6 +36,7 @@ if DEBUG:
    URL_BUTTON_PRESS = "http://192.168.1.208:8123/api/services/button/press"  
    URL_NUMBER_PRESS = "http://192.168.1.208:8123/api/services/number/set_value" 
    VERSION          = "Local"
+   Options_Filename = "options.json"
 
 else:
 
@@ -45,6 +46,7 @@ else:
    URL_BUTTON_PRESS = "http://supervisor/core/api/services/button/press"   
    URL_NUMBER_PRESS = "http://supervisor/core/api/services/number/set_value" 
    VERSION          = os.environ.get("ADDON_VERSION")
+   Options_Filename = '/data/options.json'
 
 ###########################
 # Store the entities we use (5 of them) and the payloads to read, write, or perform an action.
@@ -95,6 +97,18 @@ class Slot_Rate:
 
 ###########################
 # Utility Routines
+
+###########################
+# Get App options as a dictionary.
+def Get_App_Options():
+  with open(Options_Filename) as f:
+      Options = json.load(f)
+  return Options
+
+# Get Threshold Option
+# (It's the only option we have... ;-) )
+def Get_Threshold_Option():
+  return Get_App_Options()['threshold']
 
 ###########################
 # Sleep until next 30 min slot start. Used to create a basic scheduler from the main loop.
@@ -193,6 +207,9 @@ while True:
     Now = datetime.now(UK_TZ)
     #Now = datetime.now(UK_TZ).replace(hour=6, minute=0, second=0, microsecond=0) # Debug - fudge time :-)
 
+    # Get the threshold each time round the loop - the user can change in the HA UI.
+    Threshold = Get_Threshold_Option()
+
     print(f"[heartbeat] {Now}")
     
     # Work out if we need a slot re-calculation this time....
@@ -206,7 +223,7 @@ while True:
     if Calculate:   
     
         #Log for user.
-        print("Re-calculating slots ...")
+        print(f"Re-calculating slots against {Threshold} p/kWh ...")
         
 	    # If 6am-6pm window, we only need todays rates. Assume this initially...
         Slots = Get_Rates(Day.TODAY)
@@ -239,7 +256,7 @@ while True:
         Cheapest_Slots = Slots[:4] 
 
 		# Only interested in free electricity! 
-        Slots = [x for x in Slots if x.Rate <= 0.0]
+        Slots = [x for x in Slots if x.Rate <= Threshold]
 
         # These are the Boost Slots.
         Boost_Slots = Slots[:4] 

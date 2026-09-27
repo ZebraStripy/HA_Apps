@@ -1,0 +1,4 @@
+configuration:
+  threshold:
+    name: Threshold
+    description: The price threshold for turning on the Solar iBoost Immersion - we boost in slots below this price. Legal range is -5.0 to 5.0, and unit is pence/kWh.
