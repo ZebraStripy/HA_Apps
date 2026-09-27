@@ -1,6 +1,6 @@
 Immersion Boost.
 
-A Home Assistant app whcih reads Octopus electricity proces, and uses a
-Solar iBooast to turn on teh immersion for 30-min slots below a configured threashold.
+A Home Assistant app which reads Octopus electricity prices, and uses
+Solar iBoost to turn on the immersion for 30-min slots below a configured threshold.
 (Usually 0.0 p/kWh, ie free electricity.)
 
