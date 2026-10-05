@@ -138,6 +138,10 @@ def Update_Option(Request, Slots):
 
    Slot_Length = min(Request.Length, len(Slots))
    
+   if Slot_Length <= 0:
+      # Nothing to do!
+      return
+   
    if Slot_Length < Request.Length and Request.Rate != None:
       # We already have a full length slot saved, and will never over-write 
       # with a shorter slot, so just stop now.
@@ -202,7 +206,7 @@ while True:
 
    # Convert hours to 30-min electricity slots.
    Fully_Charge_Slots   = round(Fully_Charge_Time * 2)
-   Top_Up_Charge_Slots  = round(Top_Up_Charge_Time * 2) 
+   Top_Up_Charge_Slots  = max(0, round(Top_Up_Charge_Time * 2))  
    
    Log(f"Top Up Size in slots: {Top_Up_Charge_Slots}")
 
