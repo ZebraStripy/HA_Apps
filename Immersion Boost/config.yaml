@@ -1,5 +1,5 @@
 name: "Immersion Boost"
-version: "0.0.4"
+version: "0.0.5"
 slug: "immersionboost"
 description: "Uses Octopus and Solar iBoost to turn on immersion for free electricity periods."
 arch:
@@ -11,4 +11,4 @@ url: "https://github.com/ZebraStripy/"
 options:
   threshold: 0.0
 schema:
-  threshold: float(-5.0, 5.0)
+  threshold: float(-5.0,5.0)
