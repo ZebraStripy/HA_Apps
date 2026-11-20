@@ -1,0 +1,28 @@
+name: "Dashboard Screenshot"
+version: "1.0.0"
+slug: dashboard_screenshot
+description: "Periodically screenshots a Home Assistant dashboard and saves the image to /config/www"
+arch:
+  - amd64
+  - aarch64
+init: false
+startup: application
+boot: auto
+map:
+  - type: homeassistant_config
+    path: /homeassistant
+    read_only: false
+options:
+  url: "http://homeassistant:8123/lovelace/0"
+  token: null
+  width: 1280
+  height: 800
+  wait: 5
+  interval: 60
+schema:
+  url: url
+  token: password
+  width: "int(100,4000)"
+  height: "int(100,10000)"
+  wait: "int(0,120)"
+  interval: "int(5,86400)"

@@ -1,0 +1,19 @@
+configuration:
+  url:
+    name: Dashboard URL
+    description: Full URL of the dashboard to capture, e.g. http://homeassistant:8123/lovelace/0
+  token:
+    name: Long-lived access token
+    description: Created on your Home Assistant profile page (Security tab). Used to log in to the dashboard.
+  width:
+    name: Viewport width
+    description: Width in pixels of the browser viewport.
+  height:
+    name: Viewport height
+    description: Height in pixels of the browser viewport.
+  wait:
+    name: Wait after load
+    description: Seconds to wait after the page loads before capturing, so cards can finish rendering.
+  interval:
+    name: Refresh interval
+    description: Seconds between screenshots.
