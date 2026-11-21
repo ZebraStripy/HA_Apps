@@ -33,7 +33,7 @@ OPTIONS_FILE = "/data/options.json"   # written by the Supervisor from the app c
 OUTPUT_DIR = "/homeassistant/www/Screenshots"  # = config/www/Screenshots, served by HA at /local/Screenshots/
 OUTPUT_FILE = "screenshot.png"        # -> /local/Screenshots/screenshot.png
 FULL_PAGE = False                     # capture the entire scrollable page, not just the viewport
-CROP_SIZE = 480                       # crop a square this size from the lower-right corner (0 = no crop)
+CROP_SIZE = 480                       # crop a square this size, starting at the configured x,y (0 = no crop)
 HIDE_SIDEBAR = True                   # hide the Home Assistant sidebar (only applies when a token is used)
 INSECURE = False                      # ignore HTTPS certificate errors (self-signed certs)
 # ---------------------------------------------------------------------------
@@ -83,17 +83,18 @@ def set_viewport(driver, width, height):
     )
 
 
-def crop_bottom_right(path, size):
-    """Crop the image at `path` in place to a size x size square taken from
-    the lower-right corner (or the whole image if it is smaller)."""
+def crop_square(path, x, y, size):
+    """Crop the image at `path` in place to a size x size square whose top-left
+    corner is at (x, y). The square is clipped if it runs past the image edge."""
     with Image.open(path) as img:
         w, h = img.size
-        cw, ch = min(size, w), min(size, h)
-        cropped = img.crop((w - cw, h - ch, w, h))
+        if x >= w or y >= h:
+            raise ValueError(f"Crop origin ({x}, {y}) is outside the {w}x{h} capture.")
+        cropped = img.crop((x, y, min(x + size, w), min(y + size, h)))
     cropped.save(path)
 
 
-def take_screenshot(url, width, height, wait, token):
+def take_screenshot(url, width, height, wait, token, x, y):
     chromium = shutil.which("chromium") or shutil.which("chromium-browser")
     chromedriver = shutil.which("chromedriver")
     if not chromium or not chromedriver:
@@ -137,7 +138,7 @@ def take_screenshot(url, width, height, wait, token):
             raise RuntimeError("Failed to write screenshot file.")
 
         if CROP_SIZE > 0:
-            crop_bottom_right(tmp_path, CROP_SIZE)
+            crop_square(tmp_path, x, y, CROP_SIZE)
 
         os.replace(tmp_path, final_path)
     finally:
@@ -156,6 +157,8 @@ def main():
         height = int(opts["height"])
         wait = float(opts["wait"])
         interval = float(opts["interval"])
+        x = int(opts["x"])
+        y = int(opts["y"])
     except (OSError, KeyError, ValueError) as e:
         sys.exit(f"Invalid app configuration: {e!r}")
 
@@ -170,7 +173,7 @@ def main():
     while True:
         started = time.monotonic()
         try:
-            take_screenshot(url, width, height, wait, token)
+            take_screenshot(url, width, height, wait, token, x, y)
             if first_success:
                 log("First screenshot saved; further captures are only logged on errors.")
                 first_success = False

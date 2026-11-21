@@ -1,5 +1,5 @@
 name: "Dashboard Screenshot"
-version: "1.0.1"
+version: "1.0.2"
 slug: dashboard_screenshot
 description: "Periodically screenshots a Home Assistant dashboard and saves the image to /config/www/Screenshots"
 arch:
@@ -19,6 +19,8 @@ options:
   height: 800
   wait: 5
   interval: 60
+  x: 0
+  y: 0
 schema:
   url: url
   token: password
@@ -26,3 +28,5 @@ schema:
   height: "int(100,10000)"
   wait: "int(0,120)"
   interval: "int(5,86400)"
+  x: "int(0,10000)"
+  y: "int(0,10000)"

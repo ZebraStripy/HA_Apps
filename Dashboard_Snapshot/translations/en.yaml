@@ -17,3 +17,9 @@ configuration:
   interval:
     name: Refresh interval
     description: Seconds between screenshots.
+  x:
+    name: Crop X
+    description: Left edge of the crop square, in pixels from the left of the captured page (0 = left edge).
+  y:
+    name: Crop Y
+    description: Top edge of the crop square, in pixels from the top of the captured page (0 = top edge).

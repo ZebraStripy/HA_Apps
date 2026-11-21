@@ -35,6 +35,8 @@ capture. You can revoke it from the same page.
 | `height` | `800` | Browser viewport height in pixels. |
 | `wait` | `5` | Seconds to wait after the page loads, so cards can finish rendering. |
 | `interval` | `60` | Seconds between screenshots. |
+| `x` | `0` | Left edge, in pixels, of the crop square, measured from the left of the captured page. |
+| `y` | `0` | Top edge, in pixels, of the crop square, measured from the top of the captured page. |
 
 ### Which URL should I use?
 
@@ -53,15 +55,18 @@ These are set at the top of `screenshot.py`, not in the app configuration:
 | Constant | Value | Meaning |
 | --- | --- | --- |
 | `OUTPUT_DIR` / `OUTPUT_FILE` | `/homeassistant/www/Screenshots` / `screenshot.png` | Output location (`/config/www/Screenshots/screenshot.png` in Home Assistant). |
-| `CROP_SIZE` | `480` | The capture is cropped to a 480×480 square from the **lower-right** corner. `0` disables cropping. |
+| `CROP_SIZE` | `480` | Size of the square cropped from the capture, starting at the configured `x`, `y` (its top-left corner). `0` disables cropping, and then `x` and `y` are ignored. |
 | `HIDE_SIDEBAR` | `True` | Hides the Home Assistant sidebar before capturing. |
 | `FULL_PAGE` | `False` | Capture the whole scrollable page instead of just the viewport. |
 | `INSECURE` | `False` | Ignore HTTPS certificate errors (self-signed certificates). |
 
 Changing a constant means editing `screenshot.py` and rebuilding the app.
 
-Because of the crop, set `width` and `height` so that the viewport is at least
-480×480. The 480×480 area you get is the bottom-right of that viewport.
+The crop square starts at `x`, `y` (its top-left corner) and extends 480 pixels
+right and down. Set `width` and `height` so the viewport covers it (at least
+`x` + 480 wide and `y` + 480 high); if the square runs past the edge, it is
+clipped and the image won't be square. With `x` and `y` at 0 you get the
+top-left 480×480 of the page.
 
 ## Using the image
 
