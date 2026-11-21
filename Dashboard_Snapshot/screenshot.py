@@ -3,8 +3,8 @@
 Dashboard Screenshot - Home Assistant app.
 
 Periodically screenshots a (Home Assistant) dashboard with headless Chromium,
-crops it, and saves it to the "www" folder of the Home Assistant config, where
-Home Assistant serves it at /local/<OUTPUT_FILE>.
+crops it, and saves it to the "www/Screenshots" folder of the Home Assistant
+config, where Home Assistant serves it at /local/Screenshots/<OUTPUT_FILE>.
 
 Settings come from the app's Configuration tab (/data/options.json).
 The constants below are fixed behaviour; edit them here if you need to change them.
@@ -30,8 +30,8 @@ from PIL import Image
 # Constants
 # ---------------------------------------------------------------------------
 OPTIONS_FILE = "/data/options.json"   # written by the Supervisor from the app config
-OUTPUT_DIR = "/homeassistant/www"     # = config/www, served by HA at /local/
-OUTPUT_FILE = "screenshot.png"        # -> /local/screenshot.png
+OUTPUT_DIR = "/homeassistant/www/Screenshots"  # = config/www/Screenshots, served by HA at /local/Screenshots/
+OUTPUT_FILE = "screenshot.png"        # -> /local/Screenshots/screenshot.png
 FULL_PAGE = False                     # capture the entire scrollable page, not just the viewport
 CROP_SIZE = 480                       # crop a square this size from the lower-right corner (0 = no crop)
 HIDE_SIDEBAR = True                   # hide the Home Assistant sidebar (only applies when a token is used)
@@ -163,7 +163,8 @@ def main():
         log("WARNING: no access token configured - Home Assistant will show its login page.")
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    log(f"Capturing {url} every {interval:g}s -> {OUTPUT_DIR}/{OUTPUT_FILE} (served at /local/{OUTPUT_FILE})")
+    served_at = "/local/" + os.path.relpath(os.path.join(OUTPUT_DIR, OUTPUT_FILE), "/homeassistant/www")
+    log(f"Capturing {url} every {interval:g}s -> {OUTPUT_DIR}/{OUTPUT_FILE} (served at {served_at})")
 
     first_success = True
     while True:

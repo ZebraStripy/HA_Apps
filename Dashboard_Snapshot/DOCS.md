@@ -2,12 +2,12 @@
 
 This app logs in to a Home Assistant dashboard with a long-lived access token,
 screenshots it with headless Chromium, and saves the image to the `www` folder
-of your Home Assistant configuration (`/config/www/screenshot.png`). Home
+of your Home Assistant configuration (`/config/www/Screenshots/screenshot.png`). Home
 Assistant serves everything in that folder at `/local/`, so the image is
 available at:
 
 ```
-http://<your-ha>:8123/local/screenshot.png
+http://<your-ha>:8123/local/Screenshots/screenshot.png
 ```
 
 A new screenshot is taken every **Refresh interval** seconds. The file is
@@ -52,7 +52,7 @@ These are set at the top of `screenshot.py`, not in the app configuration:
 
 | Constant | Value | Meaning |
 | --- | --- | --- |
-| `OUTPUT_DIR` / `OUTPUT_FILE` | `/homeassistant/www` / `screenshot.png` | Output location (`/config/www/screenshot.png` in Home Assistant). |
+| `OUTPUT_DIR` / `OUTPUT_FILE` | `/homeassistant/www/Screenshots` / `screenshot.png` | Output location (`/config/www/Screenshots/screenshot.png` in Home Assistant). |
 | `CROP_SIZE` | `480` | The capture is cropped to a 480×480 square from the **lower-right** corner. `0` disables cropping. |
 | `HIDE_SIDEBAR` | `True` | Hides the Home Assistant sidebar before capturing. |
 | `FULL_PAGE` | `False` | Capture the whole scrollable page instead of just the viewport. |
@@ -69,7 +69,7 @@ For example, in a dashboard picture card:
 
 ```yaml
 type: picture
-image: /local/screenshot.png
+image: /local/Screenshots/screenshot.png
 ```
 
 Browsers may cache the image. If a card looks stale, force-refresh the page.
@@ -80,6 +80,8 @@ Browsers may cache the image. If a card looks stale, force-refresh the page.
   **without authentication**. Anyone who can reach your Home Assistant URL
   (including from outside, if you expose it) can download the screenshot. Don't
   capture dashboards that show anything sensitive.
+- **Folder name.** The `Screenshots` folder is created automatically. The path is case-sensitive, so use
+  `/local/Screenshots/screenshot.png` exactly.
 - **First start.** If the `www` folder didn't exist when Home Assistant started,
   restart Home Assistant once after the first screenshot is saved so it starts
   serving `/local/`.

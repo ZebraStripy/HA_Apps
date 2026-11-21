@@ -1,7 +1,7 @@
 name: "Dashboard Screenshot"
-version: "1.0.0"
+version: "1.0.1"
 slug: dashboard_screenshot
-description: "Periodically screenshots a Home Assistant dashboard and saves the image to /config/www"
+description: "Periodically screenshots a Home Assistant dashboard and saves the image to /config/www/Screenshots"
 arch:
   - amd64
   - aarch64
