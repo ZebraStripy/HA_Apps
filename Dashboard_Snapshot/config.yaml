@@ -1,7 +1,7 @@
 name: "Dashboard Screenshot"
-version: "1.0.2"
+version: "1.1.0"
 slug: dashboard_screenshot
-description: "Periodically screenshots a Home Assistant dashboard and saves the image to /config/www/Screenshots"
+description: "Periodically screenshots Home Assistant dashboards and saves the images to /config/www/Screenshots"
 arch:
   - amd64
   - aarch64
@@ -13,20 +13,24 @@ map:
     path: /homeassistant
     read_only: false
 options:
-  url: "http://homeassistant:8123/lovelace/0"
   token: null
-  width: 1280
-  height: 800
-  wait: 5
-  interval: 60
-  x: 0
-  y: 0
+  snapshots:
+    - url: "http://homeassistant:8123/lovelace/0"
+      filename: "screenshot.png"
+      width: 1280
+      height: 800
+      x: 0
+      y: 0
+      wait: 5
+      interval: 60
 schema:
-  url: url
   token: password
-  width: "int(100,4000)"
-  height: "int(100,10000)"
-  wait: "int(0,120)"
-  interval: "int(5,86400)"
-  x: "int(0,10000)"
-  y: "int(0,10000)"
+  snapshots:
+    - url: url
+      filename: "match(^[A-Za-z0-9_-]+\\.png$)"
+      width: "int(100,4000)"
+      height: "int(100,10000)"
+      x: "int(0,10000)"
+      y: "int(0,10000)"
+      wait: "int(0,120)"
+      interval: "int(5,86400)"
